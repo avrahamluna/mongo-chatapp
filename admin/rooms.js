@@ -10,16 +10,13 @@ var url = "mongodb://localhost:27017/chat";
 
 router.get('/', function (req, res) {
 
-
     MongoClient.connect(url, function (error, db){
 
         db.collection("rooms").find().toArray(function(error, rooms){
             if(error){
                 console.error(error);
                 return;
-
             }
-
             res.render("rooms/list", {
                 title: "Admin Rooms",
                 rooms: rooms
@@ -27,8 +24,6 @@ router.get('/', function (req, res) {
             db.close();
         });
     });
-
-
 
 });
 
@@ -39,12 +34,14 @@ router.route('/add')
   .post(function (req, res) {
     var room = {
       name: req.body.name,
-      id: uuid.v4()
     };
 
-    rooms.push(room);
+      MongoClient.connect(url, function (error, db){
+          db.collection("rooms").insertOne( room, function(error, result){
+              res.redirect(req.baseUrl);
+              })
+          });
 
-    res.redirect(req.baseUrl);
   });
 
 router.route('/edit/:id')
