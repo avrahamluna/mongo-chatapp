@@ -3,26 +3,23 @@ var messages = require("./data/messages.json");
 var _ = require("lodash");
 var uuid = require("node-uuid");
 var users = require("./data/users.json");
-var MongoClient = require("mongodb").MongoClient;
-var ObjectID = require("mongodb").ObjectID;
+var chatDB = require("./data/chatDB");
+
 
 var router = express.Router();
 module.exports = router;
 
-var url = "mongodb://localhost:27017/chat";
-var connect = MongoClient.connect(url);
-
 router.get("/rooms", function (req, res, next) {
 
-    connect
-        .then(db => db.collection("users").find().toArray())
+    ChatDB.connect
+        .then(db => db.collection("rooms").find().toArray())
         .then (users => res.json(users))
         .catch(next);
 });
 
 router.get("/users", function (req, res, next) {
 
-    connect
+    ChatDB.connect
         .then(db => db.collection("users").find().toArray())
         .then (users => res.json(users))
         .catch(next);

@@ -29,3 +29,10 @@ app.use("/api", apiRouter);
 app.listen(3000, function () {
   console.log('Chat app listening on port 3000!');
 });
+
+process.on('SIGINT', function (){
+  console.log("SIGINT");
+  require("./data/chatDB").close(function(){
+
+  });
+});
