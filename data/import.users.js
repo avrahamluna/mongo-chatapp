@@ -23,16 +23,16 @@ function importUsers(){
 
 /*
 
-MongoClient.connect(url, function (error, db){
+ MongoClient.connect(url, function (error, db){
 
-    db.collection("rooms").find().toArray(function(error, rooms){
-        if(error){
-            console.error(error);
-            return;
+ db.collection("rooms").find().toArray(function(error, rooms){
+ if(error){
+ console.error(error);
+ return;
 
-        }
-        console.log(rooms);
-        db.close();
-    });
-});   */
+ }
+ console.log(rooms);
+ db.close();
+ });
+ });   */
 
