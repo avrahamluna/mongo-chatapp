@@ -7,18 +7,38 @@ mongoose.connect(url)
 
 function importUsers(){
 
+mongoose.Promise = global.Promise;
+
+    var userSchemaOptions = {
+        collection: "chatusers",
+
+    };
+
     var userSchema = new mongoose.Schema({
-
         alias: String,
-        roles: [String]
-
-    });
+        roles: [String],
+        contact: {
+            phone: String,
+            email: String
+        },
+        address: {
+            lines: [String],
+            city: String,
+            state: String,
+            zip: Number
+        }
+    }, userSchemaOptions);
 
     var User = mongoose.model("User", userSchema);
 
     User.insertMany(users)
-        .then(() => console.log("inserted!"));
-
+        .then(() => {
+            console.log("inserted!")
+        mongoose.disconnect();
+})
+.catch(error => {
+   console.error(error);
+});
 }
 
 /*

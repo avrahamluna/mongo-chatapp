@@ -34,7 +34,7 @@
       ],
       "city": "Seattle",
       "state": "WA",
-      "zip": "98765"
+      "zip": 98765
     }
   },
   {
@@ -49,7 +49,7 @@
       ],
       "city": "Lincoln",
       "state": "NE",
-      "zip": "76852"
+      "zip": 76852
     }
   }
 ]
