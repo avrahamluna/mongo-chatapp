@@ -20,6 +20,7 @@ mongoose.Promise = global.Promise;
         contact: {
             phone: String,
             email: String
+
         },
         address: {
             lines: [String],
