@@ -1,4 +1,3 @@
-var uuid = require("node-uuid");
 var _ = require("lodash");
 var express = require("express");
 var users = require("./../data/users.json");
@@ -10,13 +9,9 @@ module.exports = router;
 
 
 router.get('/', function (req, res) {
-    var User = require("../admin/userModel");
-
 
     chatDB.connectMongoose
-        .then(function(){
-        return User.find().exec();
-    })
+        .then(() => chatDB.User.find().exec())
     .then(function(users){
         res.render("users/list", {
             title: "Admin Users",
@@ -32,15 +27,12 @@ router.route('/add')
     res.render("users/add");
   })
   .post(function (req, res) {
-    var user = {
-      id: uuid.v4()
-    };
+    var user = new chatDB.User();
 
     userFromRequestBody(user, req);
 
-    users.push(user);
-
-    res.redirect(req.baseUrl);
+     user.save()
+         .then(() => res.redirect(req.baseUrl));
   });
 
 function userFromRequestBody(user, request) {

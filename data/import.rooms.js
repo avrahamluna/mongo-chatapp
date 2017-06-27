@@ -1,4 +1,5 @@
 var users = require(__dirname + "/users.json");
+
 var mongoose = require("mongoose");
 
 var url = "mongodb://localhost:27017/chat";
