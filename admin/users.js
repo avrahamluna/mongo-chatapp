@@ -1,6 +1,6 @@
-var _ = require("lodash");
+
 var express = require("express");
-var users = require("./../data/users.json");
+
 var os = require('os');
 var chatDB = require("../data/chatDB");
 
@@ -54,30 +54,37 @@ router.route('/edit/:id')
   .all(function (req, res, next) {
     var userId = req.params.id;
 
-    var user = _.find(users, r => r.id === userId);
-    if (!user) {
-      res.sendStatus(404);
-      return;
-    }
-    res.locals.user = user;
-    res.locals.userHasRole = function (role) {
-      return (user.roles || []).indexOf(role) > -1
-    };
-    next()
+    chatDB.User.findById(userId).exec()
+        .then(user =>{
+            if (!user) {
+                res.sendStatus(404);
+                return;
+            }
+            res.locals.user = user;
+            res.locals.userHasRole = function (role) {
+                return (user.roles || []).indexOf(role) > -1
+            };
+            next()
+        });
+
+
   })
   .get(function (req, res) {
     res.render("users/edit");
   })
   .post(function (req, res) {
     userFromRequestBody(res.locals.user, req);
+    res.locals.user.save()
+        .then(() =>  res.redirect(req.baseUrl));
 
-    res.redirect(req.baseUrl);
   });
+
+
 
 router.get('/delete/:id', function (req, res) {
   var userId = req.params.id;
 
-  users = users.filter(r => r.id !== userId);
+    chatDB.User.findByIdAndRemove(userId)
+        .then(() => res.redirect(req.baseUrl));
 
-  res.redirect(req.baseUrl);
 });
