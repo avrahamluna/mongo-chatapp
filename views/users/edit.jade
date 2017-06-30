@@ -3,6 +3,11 @@ extends ../layout
 block content
   h1 Edit user
 
+  if errors
+    div.alert.alert-danger
+      each error in errors
+          = error.message
+
   form(method="post")
     fieldset.form-group
       label(for="name") Alias:
@@ -35,7 +40,7 @@ block content
       input.form-control(name="address.state", type="text", value="#{user.address.state}")
 
       label(for="zip") Zip:
-      input.form-control(name="address.zip", type="zip", value="#{user.address.zip}")
+      input.form-control(name="address.zip", type="zip", value="#{user.address.zip || ''}")
 
     button.btn.btn-primary(type="submit") Save user
     a.btn.btn-default(href="/admin/users") Cancel

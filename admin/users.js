@@ -1,6 +1,4 @@
-
 var express = require("express");
-
 var os = require('os');
 var chatDB = require("../data/chatDB");
 
@@ -8,16 +6,16 @@ var router = express.Router();
 module.exports = router;
 
 
-router.get('/', function (req, res) {
+router.get('/', function (req, res, next) {
 
-    chatDB.connectMongoose
-        .then(() => chatDB.User.find().exec())
+    chatDB.User.find().exec()
     .then(function(users){
         res.render("users/list", {
             title: "Admin Users",
             users: users
         });
-    });
+    })
+        .catch(next);
 
 
 });
@@ -26,13 +24,15 @@ router.route('/add')
   .get(function (req, res) {
     res.render("users/add");
   })
-  .post(function (req, res) {
+  .post(function (req, res, next) {
     var user = new chatDB.User();
 
     userFromRequestBody(user, req);
 
-     user.save()
-         .then(() => res.redirect(req.baseUrl));
+
+          user.save()
+         .then(() => res.redirect(req.baseUrl))
+         .catch(next);
   });
 
 function userFromRequestBody(user, request) {
@@ -65,26 +65,37 @@ router.route('/edit/:id')
                 return (user.roles || []).indexOf(role) > -1
             };
             next()
-        });
+        })
+        .catch(next);
 
 
   })
+
   .get(function (req, res) {
     res.render("users/edit");
   })
-  .post(function (req, res) {
+  .post(function (req, res, next) {
     userFromRequestBody(res.locals.user, req);
-    res.locals.user.save()
-        .then(() =>  res.redirect(req.baseUrl));
+
+      res.locals.user.save()
+        .then(() =>  res.redirect(req.baseUrl))
+        .catch(error => {
+          if(error.name === "ValidationError"){
+              res.locals.errors = error.errors;
+              res.render("users/edit");
+              return;
+          }
+       next(error);
+      });
 
   });
 
 
-
-router.get('/delete/:id', function (req, res) {
+router.get('/delete/:id', function (req, res, next) {
   var userId = req.params.id;
 
     chatDB.User.findByIdAndRemove(userId)
-        .then(() => res.redirect(req.baseUrl));
+        .then(() => res.redirect(req.baseUrl))
+        .catch(next);
 
 });

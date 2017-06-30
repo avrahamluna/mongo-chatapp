@@ -1,11 +1,7 @@
-/**
- * Created by Abe on 25/06/2017.
- */
-
-// todo move to a global place to configure mongoose
 var mongoose = require("mongoose");
 
-mongoose.Promise = global.Promise;
+
+
 
 var schemaOptions = {
     collection: "users",
@@ -13,7 +9,7 @@ var schemaOptions = {
 };
 
 var schema = new mongoose.Schema({
-    alias: String,
+    alias: { type: String, required: true, minlength:6 },
     roles: [String],
     contact: {
         phone: String,
